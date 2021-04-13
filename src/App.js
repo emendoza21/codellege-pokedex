@@ -44,10 +44,10 @@ class App extends Component {
 
 function NavBar({ onChange, value }) {
   return (
-    <div className="bg-white p-6 flex justify-between ">
+    <div className="bg-red-500 p-6 flex justify-between ">
       <img
-        className="w-4 h-3"
-        src="https://www.pikpng.com/pngl/b/365-3650457_flecha-hacia-la-derecha-png-arrow-left-to.png"
+        className="w-22 h-12"
+        src="https://images.wikidexcdn.net/mwuploads/esssbwiki/7/77/latest/20111028181540/TituloUniversoPok%C3%A9mon.png"
         alt="flecha"
       ></img>
       <form>
