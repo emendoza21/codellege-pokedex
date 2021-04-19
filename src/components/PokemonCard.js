@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useEffect, useState } from "react";
 
 function PokemonCard({ data }) {
   return (
@@ -10,26 +10,18 @@ function PokemonCard({ data }) {
   );
 }
 
-class Pokemon extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      pokemon: {
-        sprites: {},
-        types: [],
-      },
-    };
-  }
+function Pokemon({ url }) {
+  const [pokemon, setPokemon] = useState({ sprites: [], types: [] });
 
-  componentDidMount() {
-    fetch(this.props.url)
+  useEffect(() => {
+    fetch(url)
       .then((result) => result.json())
       .then((json) => {
-        this.setState({ pokemon: json });
+        setPokemon(json);
       });
-  }
+  }, []);
 
-  getTypeColor = (type) => {
+  const getTypeColor = (type) => {
     const TYPE_COLORS = {
       water: "blue-500",
       fire: "red-500",
@@ -42,40 +34,38 @@ class Pokemon extends Component {
     return TYPE_COLORS[type] || "gray-500";
   };
 
-  render() {
-    const { pokemon } = this.state;
-    const color = this.getTypeColor(pokemon.types[0]?.type.name);
-    return (
-      <div className="pl-2 m-2 relative">
-        <div
-          className={`hover:bg-opacity-80  w-56 h-36 rounded-lg bg-${color}`}
-        >
-          <h2 className=" font-bold text-white capitalize p-4 text-xl ">
-            {pokemon.name}
-          </h2>
+  const types = pokemon.types.map((type) => type.type.name);
+  const color = getTypeColor(types[0]);
 
-          <div className="pl-3">
-            {pokemon.types.map((type) => {
-              return (
-                <span
-                  className={`bg-white rounded bg-opacity-25 p-1   text-white mx-1 my-1`}
-                >
-                  {type.type.name}
-                </span>
-              );
-            })}
-            <div>
-              <img
-                src={pokemon.sprites.front_default}
-                alt={pokemon.name}
-                className="w-26 flex justify-end absolute right-0 bottom-0"
-              />
-              <h1 className="text-white pt-6">#{pokemon.id}</h1>
-            </div>
+  return (
+    <div className=" m-2 relative">
+      <div className={`hover:bg-opacity-80  w-60 h-40 rounded-lg bg-${color}`}>
+        <h2 className=" font-bold text-white capitalize p-4 text-xl ">
+          {pokemon.name}
+        </h2>
+
+        <div className="pl-3">
+          {pokemon.types.map((type) => {
+            return (
+              <span
+                className={`bg-white rounded bg-opacity-25 p-1   text-white mx-1 my-1`}
+              >
+                {type.type.name}
+              </span>
+            );
+          })}
+          <div>
+            <img
+              src={pokemon.sprites.front_default}
+              alt={pokemon.name}
+              className="w-26 flex justify-end absolute right-0 bottom-0"
+            />
+            <h1 className="text-white pt-6">#{pokemon.id}</h1>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
+
 export default PokemonCard;

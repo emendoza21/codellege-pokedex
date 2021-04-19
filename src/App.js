@@ -1,47 +1,41 @@
-import { Component } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import NavBar from "./components/NavBar";
 import PokemonCard from "./components/PokemonCard";
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      pokemons: [],
-      search: "",
-    };
-  }
+function App() {
+  const [pokemons, setPokemos] = useState([]);
+  const [search, setSearch] = useState("");
 
-  componentDidMount() {
+  useEffect(() => {
     fetch("https://pokeapi.co/api/v2/pokemon?limit=100")
       .then((result) => result.json())
       .then((json) => {
-        this.setState({ pokemons: json.results });
+        setPokemos(json.results);
       });
-  }
+  });
 
-  handleChange = (event) => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
+  const handleChange = (event) => {
+    const { value } = event.target;
+    setSearch(value);
   };
 
-  filterPokemons = () => {
-    const search = this.state.search.toLowerCase();
-    return this.state.pokemons.filter((pokemon) =>
-      pokemon.name.startsWith(search)
-    );
+  const filterPokemons = () => {
+    const filter = search.toLowerCase();
+    return pokemons.filter((pokemon) => pokemon.name.startsWith(filter));
   };
 
-  render() {
-    const data = this.filterPokemons();
-    return (
-      <div>
-        <NavBar onChange={this.handleChange} value={this.state.search} />
-        <h1 className="text-gray-600 font-bold text-4xl mx-6">Pokedex</h1>
+  const data = filterPokemons();
+  return (
+    <div>
+      <NavBar onChange={handleChange} value={search} />
+      <h1 className="text-gray-600 font-bold text-4xl pt-5 mx-6">Pokedex</h1>
+
+      <div style={{ marginLeft: 30 }}>
         <PokemonCard data={data} />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;
